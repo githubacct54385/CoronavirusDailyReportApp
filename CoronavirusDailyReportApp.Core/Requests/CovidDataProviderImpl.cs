@@ -31,10 +31,8 @@ namespace CoronavirusDailyReportApp.Core.Requests {
                     List<TimelineData> timelineData = timeline.Create (json);
 
                     DateTime lastUpdatedDate = GetLastUpdatedate (covidData);
-                    //DateTime compareDate = lastUpdatedDate.Date.AddDays (-1);
 
                     string country = GetCountry (covidData);
-                    //List<CovidStats> covidStats = GetCovidStatsForDatesOfInterest (covidData, compareDate);
                     Location loc = new Location (countryId, country, lastUpdatedDate, timelineData);
                     locations.Add (loc);
                 }
@@ -42,47 +40,10 @@ namespace CoronavirusDailyReportApp.Core.Requests {
             return locations;
         }
 
-        private List<CovidStats> GetCovidStatsForDatesOfInterest (JObject covidData, DateTime compareDate) {
-            int latestDeaths = LatestDeaths (covidData);
-            int deathsForOldDate = DeathsForDay (compareDate, covidData);
-            int latestConfirmed = LatestConfirmed (covidData);
-            int confirmedForOldDate = ConfirmedForDay (compareDate, covidData);
-
-            DateTime lastUpdatedDate = GetLastUpdatedate (covidData);
-
-            List<CovidStats> covidStats = new List<CovidStats> ();
-            covidStats.Add (new CovidStats (latestConfirmed, latestDeaths, lastUpdatedDate.Date, true));
-            covidStats.Add (new CovidStats (confirmedForOldDate, deathsForOldDate, compareDate, false));
-
-            return covidStats;
-        }
-
         private DateTime GetLastUpdatedate (JObject covidData) {
             JToken lastUpdateDate = covidData.GetValue ("location") ["last_updated"];
             DateTime date = lastUpdateDate.Value<DateTime> ();
             return date;
-        }
-
-        private int LatestDeaths (JObject covidData) {
-            JToken deaths = covidData.GetValue ("location") ["latest"]["deaths"];
-            return deaths.Value<int> ();
-        }
-
-        private int LatestConfirmed (JObject covidData) {
-            JToken confirmed = covidData.GetValue ("location") ["latest"]["confirmed"];
-            return confirmed.Value<int> ();
-        }
-
-        private int DeathsForDay (DateTime date, JObject covidData) {
-            string dayAsString = DateUtils.GetDateToken (date);
-            JToken deaths = covidData.GetValue ("location") ["timelines"]["deaths"]["timeline"][dayAsString];
-            return deaths.Value<int> ();
-        }
-
-        private int ConfirmedForDay (DateTime date, JObject covidData) {
-            string dayAsString = DateUtils.GetDateToken (date);
-            JToken deaths = covidData.GetValue ("location") ["timelines"]["confirmed"]["timeline"][dayAsString];
-            return deaths.Value<int> ();
         }
 
         private string GetCountry (JObject covidData) {
