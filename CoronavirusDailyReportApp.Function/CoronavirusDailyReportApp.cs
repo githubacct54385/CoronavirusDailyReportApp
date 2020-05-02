@@ -17,9 +17,9 @@ namespace CoronavirusDailyReportApp {
             CovidCountries covidCountries = GetCovidCountries ();
 
             // select the dates for comparison
-            CovidDates covidDates = GetCovidDates ();
+            DateTime compareDate = GetCompareDate ();
 
-            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, covidDates);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, compareDate);
             // creates a report for posting to slack
             ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (), new ReportValuesProviderImpl ());
             ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
@@ -27,10 +27,6 @@ namespace CoronavirusDailyReportApp {
             // write to slack
             SlackWriter slackWriter = new SlackWriter (new RestProviderImpl ());
             slackWriter.Write (reportModel.SlackMessage);
-        }
-
-        public class Country {
-            public int Id { get; set; }
         }
 
         private static CovidCountries GetCovidCountries () {
@@ -41,16 +37,14 @@ namespace CoronavirusDailyReportApp {
             return covidCountries;
         }
 
-        // Reads environment vars for new and old dates
-        // converts them for the new and old date for covid tracking
-        private static CovidDates GetCovidDates () {
-            string newCovidDateMinusDaysAsString = System.Environment.GetEnvironmentVariable ("NewCovidDateMinusDays");
+        // Reads environment vars for compare date
+        // Takes today's date and subtracts the compare date number of days from it
+        private static DateTime GetCompareDate () {
             string oldCovidDateMinusDaysAsString = System.Environment.GetEnvironmentVariable ("OldCovidDateMinusDays");
 
-            int newCovidDateMinusDays = int.Parse (newCovidDateMinusDaysAsString);
             int oldCovidDateMinusDays = int.Parse (oldCovidDateMinusDaysAsString);
 
-            return new CovidDates (DateTime.Today.AddDays (newCovidDateMinusDays), DateTime.Today.AddDays (oldCovidDateMinusDays));
+            return DateTime.Today.AddDays (oldCovidDateMinusDays);
         }
     }
 }

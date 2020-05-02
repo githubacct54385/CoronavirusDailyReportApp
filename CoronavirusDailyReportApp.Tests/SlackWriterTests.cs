@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Autofac.Extras.Moq;
 using CoronavirusDailyReportApp.Core.Models;
 using CoronavirusDailyReportApp.Core.ReportGeneration;
@@ -31,20 +30,25 @@ namespace CoronavirusAzFunction.Tests {
         [Fact]
         public void ReportModel_CreatesCorrectSlackMessage () {
 
-            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020 00:09:05 AM\n\nUSA\n50 Deaths (+20)\n100 Confirmed (+25)\n\nSingapore\n5 Deaths (+2)\n50 Confirmed (+20)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020 00:09:05 AM\n\nUSA\n55,000 Deaths (+10,000)\n1,000,000 Confirmed (+50,000)\n\nSingapore\n5 Deaths (+2)\n50 Confirmed (+20)\n\n";
 
             var locations = SampleTestData.SampleLocations ();
 
-            CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
-            List<int> countryIds = new List<int> () { 1, 2 };
+            CovidCountries covidCountries = new CovidCountries ();
+            covidCountries.AddCountryId (1);
+            covidCountries.AddCountryId (2);
 
-            ReportInput reportInput = new ReportInput (countryIds, covidDates);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, new DateTime (2020, 4, 29));
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
                 mock.Mock<ICovidDataProvider> ()
                     .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
+
+                mock.Mock<ICovidDataProvider> ()
+                    .Setup (x => x.GetToday ())
+                    .Returns (new DateTime (2020, 4, 30));
 
                 mock.Mock<IReportValuesProvider> ()
                     .Setup (x => x.GetReportTime ())
@@ -54,28 +58,31 @@ namespace CoronavirusAzFunction.Tests {
 
                 var actual = sut.GenerateReport (reportInput);
 
-                Assert.Equal (new DateTime (2020, 4, 30), actual.ReportDate);
                 Assert.Equal (expectedSlackMessage, actual.SlackMessage);
-                Assert.Equal ("Covid Cases For Thursday April 30, 2020 00:09:05 AM", actual.Header);
             }
         }
 
         [Fact]
         public void ReportModel_ShowsNegativeChangeWhenPreviousDayHasLessCases () {
-            string expectedSlackMessage = $"Covid Cases For Friday May 01, 2020 00:10:55 AM\n\nUSA\n50 Deaths (No Change)\n75 Confirmed (-25)\n\nSingapore\n5 Deaths (No Change)\n30 Confirmed (-20)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Friday May 01, 2020 00:10:55 AM\n\nUSA\n75,000 Deaths (No Change)\n175,000 Confirmed (-25,000)\n\nSingapore\n5 Deaths (No Change)\n30 Confirmed (-20)\n\n";
 
             var locations = SampleTestData.SampleNegativeChangeLocations ();
 
-            CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
-            List<int> countryIds = new List<int> () { 1, 2 };
+            CovidCountries covidCountries = new CovidCountries ();
+            covidCountries.AddCountryId (1);
+            covidCountries.AddCountryId (2);
 
-            ReportInput reportInput = new ReportInput (countryIds, covidDates);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, new DateTime (2020, 4, 29));
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
                 mock.Mock<ICovidDataProvider> ()
                     .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
+
+                mock.Mock<ICovidDataProvider> ()
+                    .Setup (x => x.GetToday ())
+                    .Returns (new DateTime (2020, 4, 30));
 
                 mock.Mock<IReportValuesProvider> ()
                     .Setup (x => x.GetReportTime ())
@@ -85,9 +92,7 @@ namespace CoronavirusAzFunction.Tests {
 
                 var actual = sut.GenerateReport (reportInput);
 
-                Assert.Equal (new DateTime (2020, 4, 30), actual.ReportDate);
                 Assert.Equal (expectedSlackMessage, actual.SlackMessage);
-                Assert.Equal ("Covid Cases For Friday May 01, 2020 00:10:55 AM", actual.Header);
             }
         }
     }

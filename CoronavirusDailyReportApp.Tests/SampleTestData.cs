@@ -9,8 +9,8 @@ namespace CoronavirusAzFunction.Tests {
             List<Location> locations = new List<Location> ();
 
             List<CovidStats> usaStats = new List<CovidStats> ();
-            usaStats.Add (new CovidStats (100, 50, new DateTime (2020, 4, 30)));
-            usaStats.Add (new CovidStats (75, 30, new DateTime (2020, 4, 29)));
+            usaStats.Add (new CovidStats (1000000, 55000, new DateTime (2020, 4, 30)));
+            usaStats.Add (new CovidStats (950000, 45000, new DateTime (2020, 4, 29)));
 
             List<CovidStats> singaporeStats = new List<CovidStats> ();
             singaporeStats.Add (new CovidStats (50, 5, new DateTime (2020, 4, 30)));
@@ -26,8 +26,8 @@ namespace CoronavirusAzFunction.Tests {
             List<Location> locations = new List<Location> ();
 
             List<CovidStats> usaStats = new List<CovidStats> ();
-            usaStats.Add (new CovidStats (75, 50, new DateTime (2020, 4, 30)));
-            usaStats.Add (new CovidStats (100, 50, new DateTime (2020, 4, 29)));
+            usaStats.Add (new CovidStats (175000, 75000, new DateTime (2020, 4, 30)));
+            usaStats.Add (new CovidStats (200000, 75000, new DateTime (2020, 4, 29)));
 
             List<CovidStats> singaporeStats = new List<CovidStats> ();
             singaporeStats.Add (new CovidStats (30, 5, new DateTime (2020, 4, 30)));

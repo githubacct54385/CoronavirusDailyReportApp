@@ -23,7 +23,7 @@ namespace CoronavirusDailyReportApp.Core.Requests {
                     JObject covidData = JObject.Parse (json);
 
                     string country = GetCountry (covidData);
-                    List<CovidStats> covidStats = GetCovidStatsForLastTwoDays (covidData, reportInput.CovidDates);
+                    List<CovidStats> covidStats = GetCovidStatsForDatesOfInterest (covidData, reportInput.CompareDate);
                     Location loc = new Location (countryId, country, covidStats);
                     locations.Add (loc);
                 }
@@ -31,15 +31,15 @@ namespace CoronavirusDailyReportApp.Core.Requests {
             return locations;
         }
 
-        private List<CovidStats> GetCovidStatsForLastTwoDays (JObject covidData, CovidDates covidDates) {
-            int deathsForNewDate = DeathsForDay (covidDates.NewDate, covidData);
-            int deathsForOldDate = DeathsForDay (covidDates.OldDate, covidData);
-            int confirmedForNewDate = ConfirmedForDay (covidDates.NewDate, covidData);
-            int confirmedForOldDate = ConfirmedForDay (covidDates.OldDate, covidData);
+        private List<CovidStats> GetCovidStatsForDatesOfInterest (JObject covidData, DateTime compareDate) {
+            int deathsForToday = DeathsForDay (GetToday (), covidData);
+            int deathsForOldDate = DeathsForDay (compareDate, covidData);
+            int confirmedForToday = ConfirmedForDay (GetToday (), covidData);
+            int confirmedForOldDate = ConfirmedForDay (compareDate, covidData);
 
             List<CovidStats> covidStats = new List<CovidStats> ();
-            covidStats.Add (new CovidStats (confirmedForNewDate, deathsForNewDate, covidDates.NewDate));
-            covidStats.Add (new CovidStats (confirmedForOldDate, deathsForOldDate, covidDates.OldDate));
+            covidStats.Add (new CovidStats (confirmedForToday, deathsForToday, GetToday ()));
+            covidStats.Add (new CovidStats (confirmedForOldDate, deathsForOldDate, compareDate));
 
             return covidStats;
         }
@@ -70,6 +70,11 @@ namespace CoronavirusDailyReportApp.Core.Requests {
         private string GetCountry (JObject covidData) {
             JToken country = covidData.GetValue ("location") ["country"];
             return country.Value<string> ();
+        }
+
+        public DateTime GetToday () {
+            // subtract a day since UTC is ahead of the data available
+            return DateTime.Today.AddDays (-1);
         }
     }
 }

@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 
 namespace CoronavirusDailyReportApp.Core.Models {
     public class ReportInput {
-        public ReportInput (List<int> countryIds, CovidDates covidDates) {
+        public ReportInput (List<int> countryIds, DateTime compareDate) {
             CountryIds = countryIds;
-            CovidDates = covidDates;
+            CompareDate = compareDate;
         }
 
         public List<int> CountryIds { get; set; }
-        public CovidDates CovidDates { get; set; }
+        public DateTime CompareDate { get; set; }
     }
 }

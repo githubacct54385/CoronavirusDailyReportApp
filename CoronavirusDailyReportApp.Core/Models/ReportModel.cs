@@ -7,14 +7,11 @@ namespace CoronavirusDailyReportApp.Core.Models {
     public class ReportModel {
         public string Header { get; set; }
         public List<Location> Locations { get; set; }
-        public DateTime ReportDate { get; set; }
         private readonly IReportValuesProvider _provider;
 
-        public ReportModel (List<Location> locations, DateTime reportDate, IReportValuesProvider provider) {
+        public ReportModel (List<Location> locations, IReportValuesProvider provider) {
             Locations = locations;
-            ReportDate = reportDate;
             _provider = provider;
-            Header = CreateHeader ();
         }
 
         private string CreateHeader () {
@@ -22,21 +19,23 @@ namespace CoronavirusDailyReportApp.Core.Models {
             return header;
         }
 
-        private int GetDiff (int newDateAmount, int oldDateAmount) => newDateAmount - oldDateAmount;
+        private string Formatted (int number) {
+            return String.Format ("{0:n0}", number);
+        }
 
         private string DisplayDiff (int newamount, int oldamount) {
 
             if (newamount > oldamount) {
-                return $"+{newamount - oldamount}";
+                return $"+{Formatted(newamount - oldamount)}";
             } else if (newamount < oldamount) {
-                return $"{newamount - oldamount}";
+                return $"{Formatted(newamount - oldamount)}";
             } else return "No Change";
         }
 
         public string SlackMessage {
             get {
                 StringBuilder sb = new StringBuilder ();
-                sb.AppendLine (Header);
+                sb.AppendLine (CreateHeader ());
                 sb.AppendLine ();
                 foreach (Location location in Locations) {
                     sb.AppendLine ($"{location.Country}");
@@ -46,8 +45,8 @@ namespace CoronavirusDailyReportApp.Core.Models {
                     var deaths = stats.Select (p => p.Deaths).ToList ();
                     var confirmed = stats.Select (p => p.Confirmed).ToList ();
 
-                    sb.AppendLine ($"{location.DailyStats[0].Deaths} Deaths ({DisplayDiff(deaths[0], deaths[1])})");
-                    sb.AppendLine ($"{location.DailyStats[0].Confirmed} Confirmed ({DisplayDiff(confirmed[0], confirmed[1])})");
+                    sb.AppendLine ($"{Formatted(location.DailyStats[0].Deaths)} Deaths ({DisplayDiff(deaths[0], deaths[1])})");
+                    sb.AppendLine ($"{Formatted(location.DailyStats[0].Confirmed)} Confirmed ({DisplayDiff(confirmed[0], confirmed[1])})");
                     sb.AppendLine ();
                 }
 

@@ -13,7 +13,7 @@ namespace CoronavirusDailyReportApp.Core.ReportGeneration {
         }
         public ReportModel GenerateReport (ReportInput reportInput) {
             List<Location> payloads = GetPayloads (reportInput);
-            ReportModel reportModel = new ReportModel (payloads, reportInput.CovidDates.NewDate, _reportValuesProvider);
+            ReportModel reportModel = new ReportModel (payloads, _reportValuesProvider);
             return reportModel;
         }
 
