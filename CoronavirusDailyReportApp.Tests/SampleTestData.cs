@@ -9,7 +9,6 @@ namespace CoronavirusAzFunction.Tests {
             List<Location> locations = new List<Location> ();
 
             List<TimelineData> usaStats = new List<TimelineData> ();
-            // usaStats.Add(new TimelineData(225, new DateTime(2020, 4, 30), ))
             usaStats.Add (new TimelineData (225, new DateTime (2020, 4, 30), 1000000, 55000));
             usaStats.Add (new TimelineData (225, new DateTime (2020, 4, 29), 950000, 45000));
 

@@ -5,31 +5,31 @@ using System.Text;
 
 namespace CoronavirusDailyReportApp.Core.Models {
     public class ReportModel {
-        public DateTime CompareDate { get; set; }
         public List<Location> Locations { get; set; }
         private readonly IReportValuesProvider _provider;
 
-        public ReportModel (List<Location> locations, DateTime compareDate, IReportValuesProvider provider) {
+        public ReportModel (List<Location> locations, IReportValuesProvider provider) {
             Locations = locations;
-            CompareDate = compareDate;
             _provider = provider;
         }
 
         // private string CreateHeader () => $"Covid Cases For {_provider.GetReportTime()}";
         private string CreateHeader () {
-            if (Locations.Any () && Locations.First ().TimelineData.Any ()) {
-                var orderedTimelineData = Locations.First ().TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
-                var latest = orderedTimelineData.First ();
-                return $"Covid Cases For {latest.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
+            if (Locations.Any () && Locations.First ().TimelineData.Count >= 2) {
+                Location firstLocation = Locations.First ();
+                var orderedTimelineData = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
+                var latestTimeline = orderedTimelineData.First ();
+                return $"Covid Cases For {latestTimeline.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
             }
             throw new Exception ("No Locations...");
         }
 
         private string CreateSubHeader () {
-            if (Locations.Any () && Locations.First ().TimelineData.Any ()) {
-                var orderedLocations = Locations.First ().TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
-                var secondToLast = orderedLocations[1];
-                return $"Comparing with {secondToLast.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
+            if (Locations.Any () && Locations.First ().TimelineData.Count >= 2) {
+                Location firstLocation = Locations.First ();
+                var orderedLocations = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
+                var secondToLastTimeline = orderedLocations[1];
+                return $"Comparing with {secondToLastTimeline.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
             }
             throw new Exception ("No Locations...");
         }
@@ -73,11 +73,6 @@ namespace CoronavirusDailyReportApp.Core.Models {
                     sb.Append (DisplayDiff (newest.Confirmed, dayBefore.Confirmed));
                     sb.Append (")\n");
 
-                    // var deaths = stats.Select (p => p.Deaths).ToList ();
-                    // var confirmed = stats.Select (p => p.Confirmed).ToList ();
-
-                    // sb.AppendLine ($"{Formatted(location.DailyStats[0].Deaths)} Deaths ({DisplayDiff(deaths[0], deaths[1])})");
-                    // sb.AppendLine ($"{Formatted(location.DailyStats[0].Confirmed)} Confirmed ({DisplayDiff(confirmed[0], confirmed[1])})");
                     sb.AppendLine ();
                 }
 
