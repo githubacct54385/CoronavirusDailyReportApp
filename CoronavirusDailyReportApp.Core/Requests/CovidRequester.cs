@@ -8,8 +8,8 @@ namespace CoronavirusDailyReportApp.Core.Requests {
         public CovidRequester (ICovidDataProvider provider) {
             _provider = provider;
         }
-        public List<Location> MakeRequest (int[] countryIds, CovidDates covidDates) {
-            return _provider.GetCovidDataWithCompare (countryIds, covidDates);
+        public List<Location> MakeRequest (ReportInput reportInput) {
+            return _provider.GetCovidDataWithCompare (reportInput);
         }
     }
 }

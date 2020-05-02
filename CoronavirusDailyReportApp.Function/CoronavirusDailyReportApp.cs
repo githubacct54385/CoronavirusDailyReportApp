@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CoronavirusDailyReportApp.Core.Models;
 using CoronavirusDailyReportApp.Core.ReportGeneration;
 using CoronavirusDailyReportApp.Core.Requests;
@@ -11,18 +12,23 @@ namespace CoronavirusDailyReportApp {
     public static class CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
         public static void Run ([TimerTrigger ("*/30 * * * * *")] TimerInfo myTimer, ILogger log) {
-            // Country Codes from Coronavirus API
-            // 225 = US
-            // 196 = Singapore
-            // 132 = Indonesia
-            int[] countryCodes = new int[] { 225, 196, 132, 201, 120, 49, 137 };
+
+            List<int> covidCountries = new List<int> ();
+            covidCountries.Add (225);
+            covidCountries.Add (196);
+            covidCountries.Add (132);
+            covidCountries.Add (201);
+            covidCountries.Add (120);
+            covidCountries.Add (49);
+            covidCountries.Add (137);
 
             // select the dates for comparison
             CovidDates covidDates = new CovidDates (DateTime.Today.AddDays (-2), DateTime.Today.AddDays (-3));
 
+            ReportInput reportInput = new ReportInput (covidCountries, covidDates);
             // creates a report for posting to slack
             ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (), new ReportValuesProviderImpl ());
-            ReportModel reportModel = reportGenerator.GenerateReport (countryCodes, covidDates);
+            ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
 
             // write to slack
             SlackWriter slackWriter = new SlackWriter (new RestProviderImpl ());

@@ -13,16 +13,20 @@ namespace CoronavirusReportApp.Tests {
 
             List<Location> expected = SampleTestData.SampleLocations ();
 
-            int[] countryIds = new int[] { 1, 2 };
+            List<int> covidCountries = new List<int> ();
+            covidCountries.Add (1);
+            covidCountries.Add (2);
             CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
+
+            ReportInput reportInput = new ReportInput (covidCountries, covidDates);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
                 mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetCovidDataWithCompare (countryIds, covidDates))
+                    .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (expected);
 
                 CovidRequester sut = mock.Create<CovidRequester> ();
-                List<Location> actual = sut.MakeRequest (countryIds, covidDates);
+                List<Location> actual = sut.MakeRequest (reportInput);
 
                 Assert.Equal (expected[0].Id, actual[0].Id);
                 Assert.Equal (expected[1].Id, actual[1].Id);

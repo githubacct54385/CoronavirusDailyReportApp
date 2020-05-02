@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autofac.Extras.Moq;
 using CoronavirusDailyReportApp.Core.Models;
 using CoronavirusDailyReportApp.Core.ReportGeneration;
@@ -35,12 +36,14 @@ namespace CoronavirusAzFunction.Tests {
             var locations = SampleTestData.SampleLocations ();
 
             CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
-            var countryCodes = new int[] { 1, 2 };
+            List<int> countryIds = new List<int> () { 1, 2 };
+
+            ReportInput reportInput = new ReportInput (countryIds, covidDates);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
                 mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetCovidDataWithCompare (countryCodes, covidDates))
+                    .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
 
                 mock.Mock<IReportValuesProvider> ()
@@ -49,7 +52,7 @@ namespace CoronavirusAzFunction.Tests {
 
                 ReportGenerator sut = mock.Create<ReportGenerator> ();
 
-                var actual = sut.GenerateReport (countryCodes, covidDates);
+                var actual = sut.GenerateReport (reportInput);
 
                 Assert.Equal (new DateTime (2020, 4, 30), actual.ReportDate);
                 Assert.Equal (expectedSlackMessage, actual.SlackMessage);
@@ -64,12 +67,14 @@ namespace CoronavirusAzFunction.Tests {
             var locations = SampleTestData.SampleNegativeChangeLocations ();
 
             CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
-            var countryCodes = new int[] { 1, 2 };
+            List<int> countryIds = new List<int> () { 1, 2 };
+
+            ReportInput reportInput = new ReportInput (countryIds, covidDates);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
                 mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetCovidDataWithCompare (countryCodes, covidDates))
+                    .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
 
                 mock.Mock<IReportValuesProvider> ()
@@ -78,7 +83,7 @@ namespace CoronavirusAzFunction.Tests {
 
                 ReportGenerator sut = mock.Create<ReportGenerator> ();
 
-                var actual = sut.GenerateReport (countryCodes, covidDates);
+                var actual = sut.GenerateReport (reportInput);
 
                 Assert.Equal (new DateTime (2020, 4, 30), actual.ReportDate);
                 Assert.Equal (expectedSlackMessage, actual.SlackMessage);
