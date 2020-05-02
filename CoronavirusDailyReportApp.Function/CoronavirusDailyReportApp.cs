@@ -13,19 +13,19 @@ namespace CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
         public static void Run ([TimerTrigger ("*/30 * * * * *")] TimerInfo myTimer, ILogger log) {
 
-            List<int> covidCountries = new List<int> ();
-            covidCountries.Add (225);
-            covidCountries.Add (196);
-            covidCountries.Add (132);
-            covidCountries.Add (201);
-            covidCountries.Add (120);
-            covidCountries.Add (49);
-            covidCountries.Add (137);
+            CovidCountries covidCountries = new CovidCountries ();
+            covidCountries.AddCountryId (225);
+            covidCountries.AddCountryId (196);
+            covidCountries.AddCountryId (132);
+            covidCountries.AddCountryId (201);
+            covidCountries.AddCountryId (120);
+            covidCountries.AddCountryId (49);
+            covidCountries.AddCountryId (137);
 
             // select the dates for comparison
             CovidDates covidDates = new CovidDates (DateTime.Today.AddDays (-2), DateTime.Today.AddDays (-3));
 
-            ReportInput reportInput = new ReportInput (covidCountries, covidDates);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, covidDates);
             // creates a report for posting to slack
             ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (), new ReportValuesProviderImpl ());
             ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
