@@ -3,6 +3,6 @@ using CoronavirusDailyReportApp.Core.Models;
 
 namespace CoronavirusDailyReportApp.Core.Requests {
     public interface ICovidDataProvider {
-        List<NewLocation> GetCovidDataWithCompare (int[] countryIds, CovidDates covidDates);
+        List<Location> GetCovidDataWithCompare (int[] countryIds, CovidDates covidDates);
     }
 }

@@ -6,11 +6,11 @@ using System.Text;
 namespace CoronavirusDailyReportApp.Core.Models {
     public class ReportModel {
         public string Header { get; set; }
-        public List<NewLocation> Locations { get; set; }
+        public List<Location> Locations { get; set; }
         public DateTime ReportDate { get; set; }
         private readonly IReportValuesProvider _provider;
 
-        public ReportModel (List<NewLocation> locations, DateTime reportDate, IReportValuesProvider provider) {
+        public ReportModel (List<Location> locations, DateTime reportDate, IReportValuesProvider provider) {
             Locations = locations;
             ReportDate = reportDate;
             _provider = provider;
@@ -38,7 +38,7 @@ namespace CoronavirusDailyReportApp.Core.Models {
                 StringBuilder sb = new StringBuilder ();
                 sb.AppendLine (Header);
                 sb.AppendLine ();
-                foreach (NewLocation location in Locations) {
+                foreach (Location location in Locations) {
                     sb.AppendLine ($"{location.Country}");
 
                     List<CovidStats> stats = location.DailyStats;

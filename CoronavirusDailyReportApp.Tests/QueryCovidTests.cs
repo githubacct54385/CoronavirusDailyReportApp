@@ -11,7 +11,7 @@ namespace CoronavirusReportApp.Tests {
         [Fact]
         public void QueryCovid_ReturnsCorrectResults () {
 
-            List<NewLocation> expected = SampleTestData.SampleLocations ();
+            List<Location> expected = SampleTestData.SampleLocations ();
 
             int[] countryIds = new int[] { 1, 2 };
             CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
@@ -22,7 +22,7 @@ namespace CoronavirusReportApp.Tests {
                     .Returns (expected);
 
                 CovidRequester sut = mock.Create<CovidRequester> ();
-                List<NewLocation> actual = sut.MakeRequest (countryIds, covidDates);
+                List<Location> actual = sut.MakeRequest (countryIds, covidDates);
 
                 Assert.Equal (expected[0].Id, actual[0].Id);
                 Assert.Equal (expected[1].Id, actual[1].Id);

@@ -9,10 +9,10 @@ namespace CoronavirusDailyReportApp.Core.Requests {
         private const string apiSource = "jhu";
         private const string host = "https://coronavirus-tracker-api.herokuapp.com";
 
-        public List<NewLocation> GetCovidDataWithCompare (int[] countryIds, CovidDates covidDates) {
+        public List<Location> GetCovidDataWithCompare (int[] countryIds, CovidDates covidDates) {
             var client = new RestClient (host);
 
-            List<NewLocation> locations = new List<NewLocation> ();
+            List<Location> locations = new List<Location> ();
 
             foreach (int countryId in countryIds) {
                 var request = new RestRequest ($"/v2/locations/{countryId}?source={apiSource}&timelines=true");
@@ -24,7 +24,7 @@ namespace CoronavirusDailyReportApp.Core.Requests {
 
                     string country = GetCountry (covidData);
                     List<CovidStats> covidStats = GetCovidStatsForLastTwoDays (covidData, covidDates);
-                    NewLocation loc = new NewLocation (countryId, country, covidStats);
+                    Location loc = new Location (countryId, country, covidStats);
                     locations.Add (loc);
                 }
             }

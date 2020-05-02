@@ -12,14 +12,14 @@ namespace CoronavirusDailyReportApp.Core.ReportGeneration {
             _reportValuesProvider = reportValuesProvider;
         }
         public ReportModel GenerateReport (int[] countryCodes, CovidDates covidDates) {
-            List<NewLocation> payloads = GetPayloads (countryCodes, covidDates);
+            List<Location> payloads = GetPayloads (countryCodes, covidDates);
             ReportModel reportModel = new ReportModel (payloads, covidDates.NewDate, _reportValuesProvider);
             return reportModel;
         }
 
-        private List<NewLocation> GetPayloads (int[] countryCodes, CovidDates covidDates) {
+        private List<Location> GetPayloads (int[] countryCodes, CovidDates covidDates) {
             CovidRequester covidRequester = new CovidRequester (_covidDataProvider);
-            List<NewLocation> response = covidRequester.MakeRequest (countryCodes, covidDates);
+            List<Location> response = covidRequester.MakeRequest (countryCodes, covidDates);
             return response;
         }
     }
