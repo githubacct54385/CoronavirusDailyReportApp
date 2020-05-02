@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CoronavirusDailyReportApp.Core.Models;
-using CoronavirusDailyReportApp.Core.Utils;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
