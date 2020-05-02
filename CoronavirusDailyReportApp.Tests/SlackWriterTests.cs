@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Autofac.Extras.Moq;
 using CoronavirusDailyReportApp.Core.Models;
 using CoronavirusDailyReportApp.Core.ReportGeneration;
 using CoronavirusDailyReportApp.Core.Requests;
 using CoronavirusDailyReportApp.Core.Slack;
+using CoronavirusDailyReportApp.Tests;
 using Xunit;
 
 namespace CoronavirusAzFunction.Tests {
@@ -30,9 +32,15 @@ namespace CoronavirusAzFunction.Tests {
         [Fact]
         public void ReportModel_CreatesCorrectSlackMessage () {
 
-            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020 00:09:05 AM\n\nUSA\n55,000 Deaths (+10,000)\n1,000,000 Confirmed (+50,000)\n\nSingapore\n5 Deaths (+2)\n50 Confirmed (+20)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020\nComparing with Wednesday April 29, 2020\n\nUSA\n1,000,000 Deaths (+50,000)\n55,000 Confirmed (+10,000)\n\nSingapore\n50 Deaths (+20)\n5 Confirmed (+2)\n\n";
 
             var locations = SampleTestData.SampleLocations ();
+            var json = SampleTimelineData.SampleTimelineJson ();
+
+            List<TimelineData> timelineData = new List<TimelineData> ();
+            timelineData.Add (new TimelineData (225, new DateTime (2020, 4, 29), deaths : 60967, confirmed : 1039909));
+            timelineData.Add (new TimelineData (225, new DateTime (2020, 4, 30), deaths : 62996, confirmed : 1069424));
+            timelineData.Add (new TimelineData (225, new DateTime (2020, 5, 1), deaths : 64943, confirmed : 1103461));
 
             CovidCountries covidCountries = new CovidCountries ();
             covidCountries.AddCountryId (1);
@@ -42,17 +50,21 @@ namespace CoronavirusAzFunction.Tests {
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
+                mock.Mock<ITimelineProvider> ()
+                    .Setup (x => x.TimelineData (json))
+                    .Returns (timelineData);
+
                 mock.Mock<ICovidDataProvider> ()
                     .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
 
-                mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetToday ())
-                    .Returns (new DateTime (2020, 4, 30));
+                // mock.Mock<ICovidDataProvider> ()
+                //     .Setup (x => x.GetToday ())
+                //     .Returns (new DateTime (2020, 5, 1));
 
-                mock.Mock<IReportValuesProvider> ()
-                    .Setup (x => x.GetReportTime ())
-                    .Returns ("Thursday April 30, 2020 00:09:05 AM");
+                // mock.Mock<IReportValuesProvider> ()
+                //     .Setup (x => x.GetReportTime ())
+                //     .Returns ("Friday May 01, 2020");
 
                 ReportGenerator sut = mock.Create<ReportGenerator> ();
 
@@ -64,7 +76,7 @@ namespace CoronavirusAzFunction.Tests {
 
         [Fact]
         public void ReportModel_ShowsNegativeChangeWhenPreviousDayHasLessCases () {
-            string expectedSlackMessage = $"Covid Cases For Friday May 01, 2020 00:10:55 AM\n\nUSA\n75,000 Deaths (No Change)\n175,000 Confirmed (-25,000)\n\nSingapore\n5 Deaths (No Change)\n30 Confirmed (-20)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020\nComparing with Wednesday April 29, 2020\n\nUSA\n175,000 Deaths (-25,000)\n75,000 Confirmed (No Change)\n\nSingapore\n30 Deaths (-20)\n5 Confirmed (No Change)\n\n";
 
             var locations = SampleTestData.SampleNegativeChangeLocations ();
 
@@ -80,13 +92,13 @@ namespace CoronavirusAzFunction.Tests {
                     .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (locations);
 
-                mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetToday ())
-                    .Returns (new DateTime (2020, 4, 30));
+                // mock.Mock<ICovidDataProvider> ()
+                //     .Setup (x => x.GetToday ())
+                //     .Returns (new DateTime (2020, 5, 1));
 
-                mock.Mock<IReportValuesProvider> ()
-                    .Setup (x => x.GetReportTime ())
-                    .Returns ("Friday May 01, 2020 00:10:55 AM");
+                // mock.Mock<IReportValuesProvider> ()
+                //     .Setup (x => x.GetReportTime ())
+                //     .Returns ("Friday May 01, 2020");
 
                 ReportGenerator sut = mock.Create<ReportGenerator> ();
 

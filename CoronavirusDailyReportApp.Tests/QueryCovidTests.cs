@@ -24,38 +24,46 @@ namespace CoronavirusReportApp.Tests {
                     .Setup (x => x.GetCovidDataWithCompare (reportInput))
                     .Returns (expected);
 
-                mock.Mock<ICovidDataProvider> ()
-                    .Setup (x => x.GetToday ())
-                    .Returns (new DateTime (2020, 4, 30));
+                // mock.Mock<ICovidDataProvider> ()
+                //     .Setup (x => x.GetToday ())
+                //     .Returns (new DateTime (2020, 4, 30));
 
                 CovidRequester sut = mock.Create<CovidRequester> ();
                 List<Location> actual = sut.MakeRequest (reportInput);
 
-                Assert.Equal (expected[0].Id, actual[0].Id);
-                Assert.Equal (expected[1].Id, actual[1].Id);
+                for (int i = 0; i < expected.Count; i++) {
+                    Assert.Equal (expected[i].Id, actual[i].Id);
+                    Assert.Equal (expected[i].Country, actual[i].Country);
+                    Assert.Equal (expected[i].TimelineData[i].TimelineDate, actual[i].TimelineData[i].TimelineDate);
+                    Assert.Equal (expected[i].TimelineData[i].Confirmed, actual[i].TimelineData[i].Confirmed);
+                    Assert.Equal (expected[i].TimelineData[i].Deaths, actual[i].TimelineData[i].Deaths);
+                }
 
-                Assert.Equal (expected[0].Country, actual[0].Country);
-                Assert.Equal (expected[1].Country, actual[1].Country);
+                // Assert.Equal (expected[0].Id, actual[0].Id);
+                // Assert.Equal (expected[1].Id, actual[1].Id);
 
-                // Check USA Stats
-                Assert.Equal (expected[0].DailyStats[0].Day, actual[0].DailyStats[0].Day);
-                Assert.Equal (expected[0].DailyStats[1].Day, actual[0].DailyStats[1].Day);
+                // Assert.Equal (expected[0].Country, actual[0].Country);
+                // Assert.Equal (expected[1].Country, actual[1].Country);
 
-                Assert.Equal (expected[0].DailyStats[0].Confirmed, actual[0].DailyStats[0].Confirmed);
-                Assert.Equal (expected[0].DailyStats[1].Confirmed, actual[0].DailyStats[1].Confirmed);
+                // // Check USA Stats
+                // Assert.Equal (expected[0].TimelineData[0].TimelineDate, actual[0].time[0].Day);
+                // Assert.Equal (expected[0].DailyStats[1].Day, actual[0].DailyStats[1].Day);
 
-                Assert.Equal (expected[0].DailyStats[0].Deaths, actual[0].DailyStats[0].Deaths);
-                Assert.Equal (expected[0].DailyStats[1].Deaths, actual[0].DailyStats[1].Deaths);
+                // Assert.Equal (expected[0].DailyStats[0].Confirmed, actual[0].DailyStats[0].Confirmed);
+                // Assert.Equal (expected[0].DailyStats[1].Confirmed, actual[0].DailyStats[1].Confirmed);
 
-                // Check Singapore Stats
-                Assert.Equal (expected[1].DailyStats[0].Day, actual[0].DailyStats[0].Day);
-                Assert.Equal (expected[1].DailyStats[1].Day, actual[1].DailyStats[1].Day);
+                // Assert.Equal (expected[0].DailyStats[0].Deaths, actual[0].DailyStats[0].Deaths);
+                // Assert.Equal (expected[0].DailyStats[1].Deaths, actual[0].DailyStats[1].Deaths);
 
-                Assert.Equal (expected[1].DailyStats[0].Confirmed, actual[1].DailyStats[0].Confirmed);
-                Assert.Equal (expected[1].DailyStats[1].Confirmed, actual[1].DailyStats[1].Confirmed);
+                // // Check Singapore Stats
+                // Assert.Equal (expected[1].DailyStats[0].Day, actual[0].DailyStats[0].Day);
+                // Assert.Equal (expected[1].DailyStats[1].Day, actual[1].DailyStats[1].Day);
 
-                Assert.Equal (expected[1].DailyStats[0].Deaths, actual[1].DailyStats[0].Deaths);
-                Assert.Equal (expected[1].DailyStats[1].Deaths, actual[1].DailyStats[1].Deaths);
+                // Assert.Equal (expected[1].DailyStats[0].Confirmed, actual[1].DailyStats[0].Confirmed);
+                // Assert.Equal (expected[1].DailyStats[1].Confirmed, actual[1].DailyStats[1].Confirmed);
+
+                // Assert.Equal (expected[1].DailyStats[0].Deaths, actual[1].DailyStats[0].Deaths);
+                // Assert.Equal (expected[1].DailyStats[1].Deaths, actual[1].DailyStats[1].Deaths);
             }
         }
     }

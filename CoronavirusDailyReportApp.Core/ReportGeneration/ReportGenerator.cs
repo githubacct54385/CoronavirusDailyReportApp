@@ -12,8 +12,8 @@ namespace CoronavirusDailyReportApp.Core.ReportGeneration {
             _reportValuesProvider = reportValuesProvider;
         }
         public ReportModel GenerateReport (ReportInput reportInput) {
-            List<Location> payloads = GetPayloads (reportInput);
-            ReportModel reportModel = new ReportModel (payloads, _reportValuesProvider);
+            List<Location> locations = GetPayloads (reportInput);
+            ReportModel reportModel = new ReportModel (locations, reportInput.CompareDate, _reportValuesProvider);
             return reportModel;
         }
 

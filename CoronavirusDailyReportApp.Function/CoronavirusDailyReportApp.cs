@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace CoronavirusDailyReportApp {
     public static class CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
-        public static void Run ([TimerTrigger ("0 0 0 * * *")] TimerInfo myTimer, ILogger log) {
+        public static void Run ([TimerTrigger ("*/10 * * * * *")] TimerInfo myTimer, ILogger log) {
             CovidCountries covidCountries = GetCovidCountries ();
 
             // select the dates for comparison
@@ -21,7 +21,7 @@ namespace CoronavirusDailyReportApp {
 
             ReportInput reportInput = new ReportInput (covidCountries.CountryIds, compareDate);
             // creates a report for posting to slack
-            ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (), new ReportValuesProviderImpl ());
+            ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (new TimelineProviderImpl ()), new ReportValuesProviderImpl ());
             ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
 
             // write to slack
