@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace CoronavirusDailyReportApp.Core.Models {
     public class CovidCountries {
+
+        public CovidCountries () {
+            _countryIds = new List<int> ();
+        }
         private List<int> _countryIds { get; set; }
         public void AddCountryId (int countryId) {
             if (_countryIds.Contains (countryId)) {
