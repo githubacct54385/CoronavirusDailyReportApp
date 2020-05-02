@@ -13,12 +13,13 @@ namespace CoronavirusReportApp.Tests {
 
             List<Location> expected = SampleTestData.SampleLocations ();
 
-            List<int> covidCountries = new List<int> ();
-            covidCountries.Add (1);
-            covidCountries.Add (2);
+            CovidCountries covidCountries = new CovidCountries ();
+            covidCountries.AddCountryId (1);
+            covidCountries.AddCountryId (2);
+
             CovidDates covidDates = new CovidDates (new DateTime (2020, 4, 30), new DateTime (2020, 4, 29));
 
-            ReportInput reportInput = new ReportInput (covidCountries, covidDates);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, covidDates);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
                 mock.Mock<ICovidDataProvider> ()

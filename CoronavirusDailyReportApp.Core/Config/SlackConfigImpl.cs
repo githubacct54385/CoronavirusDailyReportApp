@@ -1,11 +1,13 @@
-using System.IO;
-
 namespace CoronavirusDailyReportApp.Core.Config {
     public class SlackConfigImpl : ISlackConfig {
-        private const string PATH = "/Users/alex/Documents/C#/CoronavirusDailyReportApp/CoronavirusDailyReportApp.Core/Config/Secret.txt";
         public string GetWebhookSecret () {
-            string secret = File.ReadAllText (PATH);
-            return secret;
+            // Notes:
+            // https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-class-library#environment-variables
+            // How to use environment variables
+            // make sure you put the WebhookSecret in your local.settings.json file too
+
+            string webhookSecret = System.Environment.GetEnvironmentVariable ("WebhookSecret");
+            return webhookSecret;
         }
     }
 }
