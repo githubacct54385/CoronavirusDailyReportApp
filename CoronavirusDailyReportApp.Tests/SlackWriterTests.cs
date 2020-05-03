@@ -40,7 +40,7 @@ namespace CoronavirusAzFunction.Tests {
             covidCountries.AddCountryId (1);
             covidCountries.AddCountryId (2);
 
-            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, new DateTime (2020, 4, 29));
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 
@@ -66,7 +66,7 @@ namespace CoronavirusAzFunction.Tests {
             covidCountries.AddCountryId (1);
             covidCountries.AddCountryId (2);
 
-            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, new DateTime (2020, 4, 29));
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
 
             using (AutoMock mock = AutoMock.GetLoose ()) {
 

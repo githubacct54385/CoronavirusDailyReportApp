@@ -7,19 +7,15 @@ using CoronavirusDailyReportApp.Core.Requests;
 using CoronavirusDailyReportApp.Core.Slack;
 using CoronavirusDailyReportApp.Core.Utils;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
 namespace CoronavirusDailyReportApp {
     public static class CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
-        public static void Run ([TimerTrigger ("*/10 * * * * *")] TimerInfo myTimer, ILogger log) {
+        public static void Run ([TimerTrigger ("0 0 12 * * *")] TimerInfo myTimer, ILogger log) {
             CovidCountries covidCountries = GetCovidCountries ();
 
-            // select the dates for comparison
-            DateTime compareDate = GetCompareDate ();
-
-            ReportInput reportInput = new ReportInput (covidCountries.CountryIds, compareDate);
+            ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
             // creates a report for posting to slack
             ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (new TimelineProviderImpl ()), new ReportValuesProviderImpl ());
             ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
@@ -35,16 +31,6 @@ namespace CoronavirusDailyReportApp {
             CovidCountries covidCountries = CovidCountriesUtils.ParseCsv (countriesCsv);
 
             return covidCountries;
-        }
-
-        // Reads environment vars for compare date
-        // Takes today's date and subtracts the compare date number of days from it
-        private static DateTime GetCompareDate () {
-            string oldCovidDateMinusDaysAsString = System.Environment.GetEnvironmentVariable ("OldCovidDateMinusDays");
-
-            int oldCovidDateMinusDays = int.Parse (oldCovidDateMinusDaysAsString);
-
-            return DateTime.Today.AddDays (oldCovidDateMinusDays);
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using CoronavirusDailyReportApp.Core.Models;
 
 namespace CoronavirusDailyReportApp.Core.Utils {
