@@ -14,7 +14,7 @@ namespace CoronavirusDailyReportApp {
 
             ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
             // creates a report for posting to slack
-            ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (new TimelineProviderImpl ()), new ReportValuesProviderImpl ());
+            ReportGenerator reportGenerator = new ReportGenerator (new CovidDataProviderImpl (new TimelineProviderImpl ()));
             ReportModel reportModel = reportGenerator.GenerateReport (reportInput);
 
             // write to slack

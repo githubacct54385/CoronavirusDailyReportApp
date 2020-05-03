@@ -31,7 +31,7 @@ namespace CoronavirusAzFunction.Tests {
         [Fact]
         public void ReportModel_CreatesCorrectSlackMessage () {
 
-            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020\nComparing with Wednesday April 29, 2020\n\nUSA\n1,000,000 Deaths (+50,000)\n55,000 Confirmed (+10,000)\n\nSingapore\n50 Deaths (+20)\n5 Confirmed (+2)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Thursday April 30th, 2020\nComparing with Wednesday April 29th, 2020\n\nUSA\n1,000,000 Deaths (+50,000)\n55,000 Confirmed (+10,000)\n\nSingapore\n50 Deaths (+20)\n5 Confirmed (+2)\n\n";
 
             var locations = SampleTestData.SampleLocations ();
             var json = SampleTimelineData.SampleTimelineJson ();
@@ -58,7 +58,7 @@ namespace CoronavirusAzFunction.Tests {
 
         [Fact]
         public void ReportModel_ShowsNegativeChangeWhenPreviousDayHasLessCases () {
-            string expectedSlackMessage = $"Covid Cases For Thursday April 30, 2020\nComparing with Wednesday April 29, 2020\n\nUSA\n175,000 Deaths (-25,000)\n75,000 Confirmed (No Change)\n\nSingapore\n30 Deaths (-20)\n5 Confirmed (No Change)\n\n";
+            string expectedSlackMessage = $"Covid Cases For Thursday April 30th, 2020\nComparing with Wednesday April 29th, 2020\n\nUSA\n175,000 Deaths (-25,000)\n75,000 Confirmed (No Change)\n\nSingapore\n30 Deaths (-20)\n5 Confirmed (No Change)\n\n";
 
             var locations = SampleTestData.SampleNegativeChangeLocations ();
 

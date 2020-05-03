@@ -5,15 +5,13 @@ using CoronavirusDailyReportApp.Core.Requests;
 namespace CoronavirusDailyReportApp.Core.ReportGeneration {
     public class ReportGenerator {
         private readonly ICovidDataProvider _covidDataProvider;
-        private readonly IReportValuesProvider _reportValuesProvider;
 
-        public ReportGenerator (ICovidDataProvider covidDataProvider, IReportValuesProvider reportValuesProvider) {
+        public ReportGenerator (ICovidDataProvider covidDataProvider) {
             _covidDataProvider = covidDataProvider;
-            _reportValuesProvider = reportValuesProvider;
         }
         public ReportModel GenerateReport (ReportInput reportInput) {
             List<Location> locations = GetPayloads (reportInput);
-            ReportModel reportModel = new ReportModel (locations, _reportValuesProvider);
+            ReportModel reportModel = new ReportModel (locations);
             return reportModel;
         }
 
