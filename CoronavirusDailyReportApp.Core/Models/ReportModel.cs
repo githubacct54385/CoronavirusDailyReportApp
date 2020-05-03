@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CustomDateTimeExtension.Core;
 
 namespace CoronavirusDailyReportApp.Core.Models {
     public class ReportModel {
@@ -19,7 +20,7 @@ namespace CoronavirusDailyReportApp.Core.Models {
                 Location firstLocation = Locations.First ();
                 var orderedTimelineData = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
                 var latestTimeline = orderedTimelineData.First ();
-                return $"Covid Cases For {latestTimeline.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
+                return $"Covid Cases For {latestTimeline.TimelineDate.CustomToString()}";
             }
             throw new Exception ("No Locations...");
         }
@@ -29,7 +30,7 @@ namespace CoronavirusDailyReportApp.Core.Models {
                 Location firstLocation = Locations.First ();
                 var orderedLocations = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
                 var secondToLastTimeline = orderedLocations[1];
-                return $"Comparing with {secondToLastTimeline.TimelineDate.ToString("dddd MMMM dd, yyyy")}";
+                return $"Comparing with {secondToLastTimeline.TimelineDate.CustomToString()}";
             }
             throw new Exception ("No Locations...");
         }

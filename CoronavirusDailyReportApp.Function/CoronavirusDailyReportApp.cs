@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using CoronavirusDailyReportApp.Core.Models;
 using CoronavirusDailyReportApp.Core.ReportGeneration;
 using CoronavirusDailyReportApp.Core.Requests;
@@ -12,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace CoronavirusDailyReportApp {
     public static class CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
-        public static void Run ([TimerTrigger ("0 0 12 * * *")] TimerInfo myTimer, ILogger log) {
+        public static void Run ([TimerTrigger ("0 0 4 * * *")] TimerInfo myTimer, ILogger log) {
             CovidCountries covidCountries = GetCovidCountries ();
 
             ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
