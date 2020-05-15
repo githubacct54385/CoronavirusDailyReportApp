@@ -12,8 +12,7 @@ namespace CoronavirusDailyReportApp.Core.Models {
             Locations = locations;
         }
 
-        // private string CreateHeader () => $"Covid Cases For {_provider.GetReportTime()}";
-        private string CreateHeader () {
+        private string CreateSlackHeader () {
             if (Locations.Any () && Locations.First ().TimelineData.Count >= 2) {
                 Location firstLocation = Locations.First ();
                 var orderedTimelineData = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
@@ -23,7 +22,7 @@ namespace CoronavirusDailyReportApp.Core.Models {
             throw new Exception ("No Locations...");
         }
 
-        private string CreateSubHeader () {
+        private string CreateSlackSubHeader () {
             if (Locations.Any () && Locations.First ().TimelineData.Count >= 2) {
                 Location firstLocation = Locations.First ();
                 var orderedLocations = firstLocation.TimelineData.OrderByDescending (p => p.TimelineDate).ToList ();
@@ -33,24 +32,24 @@ namespace CoronavirusDailyReportApp.Core.Models {
             throw new Exception ("No Locations...");
         }
 
-        private string Formatted (int number) {
+        private string FormattedNumber (int number) {
             return String.Format ("{0:n0}", number);
         }
 
-        private string DisplayDiff (int newamount, int oldamount) {
+        private string DisplayNumberDiff (int newamount, int oldamount) {
 
             if (newamount > oldamount) {
-                return $"+{Formatted(newamount - oldamount)}";
+                return $"+{FormattedNumber(newamount - oldamount)}";
             } else if (newamount < oldamount) {
-                return $"{Formatted(newamount - oldamount)}";
+                return $"{FormattedNumber(newamount - oldamount)}";
             } else return "No Change";
         }
 
         public string SlackMessage {
             get {
                 StringBuilder sb = new StringBuilder ();
-                sb.AppendLine (CreateHeader ());
-                sb.AppendLine (CreateSubHeader ());
+                sb.AppendLine (CreateSlackHeader ());
+                sb.AppendLine (CreateSlackSubHeader ());
                 sb.AppendLine ();
                 foreach (Location location in Locations) {
                     sb.AppendLine ($"{location.Country}");
@@ -62,14 +61,14 @@ namespace CoronavirusDailyReportApp.Core.Models {
                     var newest = reverseTimeline.First ();
                     var dayBefore = reverseTimeline[1];
 
-                    sb.Append (Formatted (newest.Deaths));
+                    sb.Append (FormattedNumber (newest.Deaths));
                     sb.Append (" Deaths (");
-                    sb.Append (DisplayDiff (newest.Deaths, dayBefore.Deaths));
+                    sb.Append (DisplayNumberDiff (newest.Deaths, dayBefore.Deaths));
                     sb.Append (")\n");
 
-                    sb.Append (Formatted (newest.Confirmed));
+                    sb.Append (FormattedNumber (newest.Confirmed));
                     sb.Append (" Confirmed (");
-                    sb.Append (DisplayDiff (newest.Confirmed, dayBefore.Confirmed));
+                    sb.Append (DisplayNumberDiff (newest.Confirmed, dayBefore.Confirmed));
                     sb.Append (")\n");
 
                     sb.AppendLine ();
