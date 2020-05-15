@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace CoronavirusDailyReportApp {
     public static class CoronavirusDailyReportApp {
         [FunctionName ("CoronavirusDailyReportApp")]
-        public static void Run ([TimerTrigger ("0 0 4 * * *")] TimerInfo myTimer, ILogger log) {
+        public static void Run ([TimerTrigger ("0 0 10 * * *")] TimerInfo myTimer, ILogger log) {
             CovidCountries covidCountries = GetCovidCountries ();
 
             ReportInput reportInput = new ReportInput (covidCountries.CountryIds);
